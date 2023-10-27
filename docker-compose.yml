@@ -1,0 +1,8 @@
+services:
+  aaaa:
+    build: 
+      context: ./src/backend/
+    container_name: aaaa
+    restart: always
+    ports:
+      - '8000:8000'
