@@ -17,7 +17,6 @@ USER_ROLES = (
 )
 
 
-# TODO: add company
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         "Username",

@@ -38,7 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.core.apps.CoreConfig',
-    'phonenumber_field'
+    'api.users.apps.UsersConfig',
+    'phonenumber_field',
+    'corsheaders',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser'
 ]
 
 MIDDLEWARE = [
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -134,3 +140,37 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 DATE_INPUT_FORMATS = ["%d.%m.%Y", "%d-%m-%Y"]
 
 PHONENUMBER_DEFAULT_REGION = "RU"
+
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "POST",
+    "PUT",
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'filename',
+    "Content-Disposition",
+    'name',
+    "boundary",
+    "Set-Cookie",
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
