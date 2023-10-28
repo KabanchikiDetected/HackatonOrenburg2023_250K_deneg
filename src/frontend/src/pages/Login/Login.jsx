@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import classes from "./Login.module.css";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../http";
+import { getUser } from "../../http";
 
 
-const Login = () => {
+const Login = ({setIsAuth}) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("")
@@ -19,13 +20,29 @@ const Login = () => {
         console.log(result)
 
         if (result === 200) {
+            setIsAuth(true)
             navigate("/profile")
         }
         else {
+            setIsAuth(false)
             setPassword("")
             setErrorMessage("Ошибка входа. Проверьте данные")
         }
     };
+
+    useEffect(() => {
+        const func = async () => {
+            const user = await getUser()
+
+            if (Object.keys(user).length !== 0) {
+                navigate("/profile")
+                setIsAuth(true)
+            } else {
+                setIsAuth(false)
+            }
+        }
+        func()
+    }, [])
 
     return (
         <form className={classes.loginForm} onSubmit={handleSubmit}>

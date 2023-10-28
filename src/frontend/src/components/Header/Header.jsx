@@ -5,17 +5,16 @@ import { NavLink } from 'react-router-dom';
 import { checkAuth } from '../../http'
 
 
-const Header = () => {
-  const [isAuth, setIsAuth] = useState(false)
+const Header = ({isAuth, setIsAuth}) => {
+  // const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
     const func = async () => {
       const result = await checkAuth()
-      console.log(result)
       setIsAuth(result)
     }
     func()
-  });
+  }, []);
 
   return (
     <header className={classes.header}>

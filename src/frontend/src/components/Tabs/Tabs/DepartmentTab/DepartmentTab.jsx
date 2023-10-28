@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import classes from './CompanyTab.module.css'
+import classes from './DepartmentTab.module.css'
 import { getUserCompany } from '../../../../http';
 
 
-const CompanyInfoTab = () => {
+const DepartmentInfoTab = () => {
     const [companyName, setCompanyName] = useState("")
     const [companyDescription, setCompanyDescription] = useState("")
     const [companyDate, setCompanyDate] = useState("")
+    const [companyLogo, setCompanyLogo] = useState("")
 
     useEffect(() => {
         const func = async () => {
             const company = await getUserCompany()
+            setCompanyLogo(company.image)
             setCompanyName(company.title)
             setCompanyDescription(company.description)
             setCompanyDate(company.created.split("T")[0].replace("-", "/"))
@@ -20,7 +22,7 @@ const CompanyInfoTab = () => {
 
     return (
         <div className={classes.companyTab}>
-            <img src="logo.svg" alt="Company Logo" className={classes.logo} />
+            <img src={companyLogo} alt="Company Logo" className={classes.logo} />
             <h1 className={classes.name}>{companyName}</h1>
             <p className={classes.description}>
                 {companyDescription}
@@ -30,16 +32,5 @@ const CompanyInfoTab = () => {
     );
 };
 
-const CompanyEditTab = () => {
-    return (
-        <div className={classes.companyTab}>
-            <input type="file" className={classes.logoInput} />
-            <input type="text" placeholder="Company Name" className={classes.nameInput} />
-            <textarea placeholder="Description" className={classes.descriptionInput}></textarea>
-            <input type="date" className={classes.joinDateInput} pattern='\d{4}-\d{2}-\d{2}'/>
-            <button className={classes.saveButton}>Изменить</button>
-        </div>
-    );
-};
 
-export { CompanyInfoTab, CompanyEditTab };
+export { DepartmentInfoTab };

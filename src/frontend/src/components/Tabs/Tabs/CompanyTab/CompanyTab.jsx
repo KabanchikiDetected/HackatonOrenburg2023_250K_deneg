@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import classes from './CompanyTab.module.css'
-import { getUserCompany } from '../../../../http';
+import { createCompany, getUserCompany } from '../../../../http';
 
 
 const CompanyInfoTab = () => {
@@ -41,6 +41,9 @@ const CompanyEditTab = () => {
     useEffect(() => {
         const func = async () => {
             const company = await getUserCompany()
+
+            console.log(company)
+
             setCompanyLogo(company.image)
             setCompanyName(company.title)
             setCompanyDescription(company.description)
