@@ -52,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     joined = models.DateTimeField(
         "Присоединился", default=timezone.now
     )
-    
+
     company = models.ForeignKey(
         "Company", verbose_name="Компания",
         on_delete=models.CASCADE, blank=True, null=True
@@ -66,7 +66,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "birthday", "phone"]
+    REQUIRED_FIELDS = [
+        "username", "birthday", "phone",
+        "first_name", "last_name", "role"
+    ]
 
     class Meta:
         db_table = "user"
@@ -92,16 +95,16 @@ class Employee(models.Model):
             MaxValueValidator(5)
         ]
     )
-    
+
     department = models.ForeignKey(
         "Department", verbose_name="Отдел",
         on_delete=models.CASCADE
     )
-    
+
     class Meta:
         verbose_name = "Работник"
         verbose_name_plural = "Работники"
-    
+
     def __str__(self) -> str:
         return f"Employee: {self.user.email}"
 
@@ -110,11 +113,11 @@ class Company(models.Model):
     title = models.CharField(
         "Компания", max_length=127
     )
-    
+
     description = models.CharField(
         "Описание", max_length=255
     )
-    
+
     created = models.DateTimeField(
         "Присоединилась", default=timezone.now
     )
@@ -132,18 +135,18 @@ class Department(models.Model):
         Company, verbose_name="Компания",
         on_delete=models.CASCADE
     )
-    
+
     title = models.CharField(
         "Название отдела", max_length=127
     )
-    
+
     created = models.DateTimeField(
         "Создан", default=timezone.now
     )
-    
+
     class Meta:
         verbose_name = "Отдел"
         verbose_name_plural = "Отделы"
-    
+
     def __str__(self) -> str:
         return f"Department: {self.title}"
