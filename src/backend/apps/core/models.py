@@ -62,6 +62,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         "Django Администратор",
         default=False
     )
+    
+    recovery_code = models.CharField(
+        "Код восстановления", default="", max_length=5
+    )
 
     objects = UserManager()
 
@@ -100,7 +104,7 @@ class Employee(models.Model):
         "Department", verbose_name="Отдел",
         on_delete=models.CASCADE
     )
-    
+
     is_active = models.BooleanField(
         "Активен?", default=True
     )
@@ -125,7 +129,7 @@ class Company(models.Model):
     created = models.DateTimeField(
         "Присоединилась", default=timezone.now
     )
-    
+
     image = models.ImageField(
         "Логотип", upload_to="media/logo",
         default="default_logo.png"
