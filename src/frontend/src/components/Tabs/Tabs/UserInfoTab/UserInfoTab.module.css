@@ -1,0 +1,31 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.field {
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 5px;
+  border: 1px solid lightgray;
+}
+
+.submitButton {
+  color: #333;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: darkblue;
+}

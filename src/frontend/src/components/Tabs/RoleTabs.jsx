@@ -14,7 +14,19 @@ const RoleTabs = () => {
   return (
     <div className="role-tabs">
       <div className="tab-buttons">
-        <button
+        {
+            activeTab === 'employee' ? <EmployeeTab/>
+            :
+            activeTab === 'hr' ? <HrTab />
+            :
+            activeTab === 'company_admin' ? <CompanyAdminTab/>
+            :
+            activeTab === "administrator" ? <AdministratorTab/>
+            :
+            <></>
+        }
+    
+        {/* <button
           className={activeTab === 'employee' ? 'active' : ''}
           onClick={() => handleTabChange('employee')}
         >
@@ -43,7 +55,7 @@ const RoleTabs = () => {
         {activeTab === 'employee' && <EmployeeTab />}
         {activeTab === 'hr' && <HrTab />}
         {activeTab === 'company_admin' && <CompanyAdminTab />}
-        {activeTab === 'administrator' && <AdministratorTab />}
+        {activeTab === '' && <AdministratorTab />} */}
       </div>
     </div>
   );
