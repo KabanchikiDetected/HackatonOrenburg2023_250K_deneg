@@ -8,6 +8,7 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls.authtoken')),
     path('users/<int:pk>/', UserDetailAPIView.as_view(), name="user_detail"),
     path('users/', UserListAPIView.as_view(), name="user_list"),
+    path('users/role/<int:pk>', UserRoleAPIView.as_view(), name="user_role"),
     path(
         'employees/',
         EmployeeListAPIView.as_view(),

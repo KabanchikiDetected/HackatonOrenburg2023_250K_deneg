@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -18,7 +19,17 @@ class UserDetailAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
 
 
-# TODO: add archive employee
+class UserRoleAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        return Response(
+            {"role": user.role},
+            status=status.HTTP_200_OK
+        )
+
+
 class EmployeeListAPIView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSeializer
@@ -39,6 +50,6 @@ class EmployeeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
             return Response(
                 {
                     "detail": "У вас недостаточно прав для выполнения данного действия."
-                }, 
+                },
                 status=status.HTTP_403_FORBIDDEN
             )
