@@ -2,10 +2,19 @@ from typing import Any
 import logging
 
 from fastapi import HTTPException, status
+import aiohttp
 
 from database import db, ObjectId
-
 from . import schemas
+
+
+async def get_user_from_token(token: str):
+    async with aiohttp.ClientSession(headers={"Authorization": token}) as session:
+        # print(session.headers)
+        response = await session.get("http://django:8000/api/auth/users/me", ssl=False)
+        user = await response.json()
+        # print(user)
+        return {"id": user["id"], "is_admin": user["role"] in ('hr', 'company_admin', 'administrator')}
 
 
 table = db['tests']
@@ -23,7 +32,6 @@ async def get_all(**filters):
 async def create(data: dict[str, Any]):
     res = await table.insert_one(data)
     item = await get_one(res.inserted_id)
-    print(item)
     return item
 
 
@@ -46,6 +54,7 @@ async def check_test(test_id: str, answers: list[list[str]], user_id: int):
         correct += question['answers'] == user_answer
     return schemas.TestResultOtput(
         test_id=test_id,
+        title=test['title'],
         user_id=user_id,
         correct=correct,
         total=test['total'])

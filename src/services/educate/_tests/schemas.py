@@ -71,6 +71,7 @@ class TestUpdate(BaseModel):
 
 class TestResultOtput(BaseModel):
     test_id: database.PyObjectId = Field(default_factory=database.ObjectId, alias="test_id")
+    title: str
     user_id: int
     correct: int
     total: int

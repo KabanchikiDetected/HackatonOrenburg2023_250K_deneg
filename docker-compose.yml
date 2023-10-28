@@ -10,8 +10,11 @@ services:
       - 8080:8080
     links:
       - "mongo:mongodb"
+      - "django:django"
     depends_on:
       - mongo
+    volumes:
+      - data:/django
 
   django:
     build:
