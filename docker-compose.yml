@@ -21,10 +21,13 @@ services:
       context: ./src/backend/
     container_name: django
     restart: always
+    command: ["bash", "start.sh"]
     env_file:
       - .env.example
     ports:
       - 8000:8000
+    depends_on:
+      - postgres
 
   mongo:
     image: mongo
@@ -44,6 +47,7 @@ services:
 
   postgres:
     image: postgres:13.3
+    container_name: postgres
     env_file:
       - .env.example
     ports:
