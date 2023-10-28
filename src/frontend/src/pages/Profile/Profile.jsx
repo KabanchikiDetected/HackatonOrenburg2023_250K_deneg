@@ -1,9 +1,10 @@
 import React from 'react';
+import RoleTabs from '../../components/Tabs/RoleTabs';
 
 const Profile = () => {
     return ( 
         <>
-            <h1>Profile</h1>
+            <RoleTabs/>
         </>
     );
 }
