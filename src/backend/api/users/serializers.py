@@ -24,6 +24,18 @@ class UserDetailSerializer(serializers.ModelSerializer):
         )
 
 
+class UserResetPasswordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
+class UserResetPasswordConfirmationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("email", "recovery_code", "password")
+
+
 class EmployeeSeializer(serializers.ModelSerializer):
     joined = serializers.DateTimeField(read_only=True)
     first_name = serializers.CharField(

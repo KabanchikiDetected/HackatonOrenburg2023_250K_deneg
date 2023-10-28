@@ -5,7 +5,10 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import *
+from .utils import generate_code, send_email
 from apps.core.models import User, Employee
+
+from drf_yasg.utils import swagger_auto_schema
 
 
 class UserListAPIView(generics.ListCreateAPIView):
@@ -27,6 +30,50 @@ class UserRoleAPIView(APIView):
         return Response(
             {"role": user.role},
             status=status.HTTP_200_OK
+        )
+
+
+class UserResetPasswordAPIView(APIView):
+    @swagger_auto_schema(request_body=UserResetPasswordSerializer)
+    def post(self, request):
+        user_email = request.data["email"]
+        user = get_object_or_404(User, email=user_email)
+
+        code = generate_code()
+        user.recovery_code = code
+
+        send_email(
+            "Восстановление пароля", f"Вот ваш код йоууу {code}", [user_email]
+        )
+        user.save()
+        return Response(
+            {
+                "status": "sent",
+                "code": code
+            }, status=status.HTTP_200_OK
+        )
+
+    @swagger_auto_schema(
+        request_body=UserResetPasswordConfirmationSerializer
+        )
+    def put(self, request):
+        user_code = request.data["recovery_code"]
+        user_email = request.data["email"]
+        new_password = request.data["password"]
+        user = get_object_or_404(User, email=user_email)
+
+        if user_code == user.recovery_code and user.recovery_code != "":
+            user.set_password(new_password)
+            user.recovery_code = ""
+            user.save()
+            return Response(
+                {"status": "success"},
+                status=status.HTTP_200_OK
+            )
+
+        return Response(
+            {"status": "wrong code"},
+            status=status.HTTP_400_BAD_REQUEST
         )
 
 

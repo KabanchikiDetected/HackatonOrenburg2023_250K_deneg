@@ -6,6 +6,10 @@ class TestLog(models.Model):
         "Тест", max_length=100 
     )
     
+    title = models.CharField(
+        "Название теста", max_length=127
+    )
+    
     user = models.ForeignKey(
         "core.Employee", on_delete=models.CASCADE,
         verbose_name="Пользователь"
