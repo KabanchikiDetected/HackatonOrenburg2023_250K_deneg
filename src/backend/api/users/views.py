@@ -86,6 +86,11 @@ class EmployeeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSeializer
     permission_classes = (IsAuthenticated,)
+    
+    def get(self, request, pk, *args, **kwargs):
+        employee = get_object_or_404(Employee, user__pk=pk)
+        serializer = EmployeeSeializer(employee)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk: int):
         if request.user.role in ["hr", "company_admin", "administrator"]:

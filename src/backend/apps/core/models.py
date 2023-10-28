@@ -97,7 +97,7 @@ class Employee(models.Model):
         "Рейтинг", validators=[
             MinValueValidator(1),
             MaxValueValidator(5)
-        ]
+        ], default=5.0
     )
 
     department = models.ForeignKey(
