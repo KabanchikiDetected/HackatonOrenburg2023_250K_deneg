@@ -41,10 +41,59 @@ const getAuthenticatedRequest = async (url) => {
 
     const headers = {
       'Authorization': `Token ${token}`,
-      'Content-Type' : 'application/json; charset=UTF-8'
+      'Content-Type': 'application/json; charset=UTF-8'
     }
 
     const response = await $api.get(url, {
+      headers
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return {}
+  }
+};
+
+
+const postAuthenticatedRequest = async (url, body) => {
+  try {
+    const token = localStorage.getItem("token")
+
+    if (!token) {
+      return {}
+    }
+
+    const headers = {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+
+    const response = await $api.post(url, body, {
+      headers
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return {}
+  }
+};
+
+const putAuthenticatedRequest = async (url, body) => {
+  try {
+    const token = localStorage.getItem("token")
+
+    if (!token) {
+      return {}
+    }
+
+    const headers = {
+      'Authorization': `Token ${token}`,
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+
+    const response = await $api.put(url, body, {
       headers
     });
 
@@ -84,18 +133,44 @@ const sendRequest = async (url, method = 'GET', data = null) => {
 };
 
 const getUser = async () => {
-    const user = await getAuthenticatedRequest('auth/users/me/')
-    return getAuthenticatedRequest(`users/${user.id}/`)
+  const user = await getAuthenticatedRequest('auth/users/me/')
+  return await getAuthenticatedRequest(`users/${user.pk || user.id}/`)
+}
+
+const updateUser = async (params) => {
+  const user = await getUser()
+
+  putAuthenticatedRequest(`users/${user.pk || user.id}/`, {
+    ...user,
+    ...params
+  })
 }
 
 const getUserCompany = async () => {
   let user = await getUser()
-  console.log(user)
-  return await getAuthenticatedRequest(`company/${user.company}/`)
+
+  if (user.company) {
+    return await getAuthenticatedRequest(`company/${user.company}/`)
+  }
+  return await createCompany()
+}
+
+const createCompany = async () => {
+  const user = await getUser()
+
+  console.log("!!!", user)
+
+  const company = await postAuthenticatedRequest("company/", {
+    title: "Название вашей компании",
+    description: "Описание вашей компании"
+  })
+  updateUser({company: company.id})
+  
+  return company
 }
 
 const logout = () => {
   localStorage.removeItem('token');
 };
 
-export { $api, login, register, getAuthenticatedRequest, sendRequest, logout, checkAuth, getUser, getUserCompany };
+export { $api, login, register, getAuthenticatedRequest, sendRequest, logout, checkAuth, getUser, getUserCompany, createCompany, updateUser };

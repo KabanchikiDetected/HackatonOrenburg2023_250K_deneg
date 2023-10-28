@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'
 import classes from './Signup.module.css';
-import { register, login } from '../../http';
+import { register, login, getUser, createCompany, getUserCompany } from '../../http';
 
-const Signup = () => {
+const Signup = ({ setIsAuth }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [birthday, setBirthday] = useState('');
@@ -17,7 +17,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const userData = {
       email,
       password,
@@ -33,12 +33,27 @@ const Signup = () => {
 
     if (result === 201) {
       login(email, password)
+      getUserCompany()
       navigate("/profile")
     }
     else {
       setError("Проверьте введенные данные.")
     }
   };
+
+  useEffect(() => {
+    const func = async () => {
+      const user = await getUser()
+
+      if (Object.keys(user).length !== 0) {
+        navigate("/profile")
+        setIsAuth(true)
+      } else {
+        setIsAuth(false)
+      }
+    }
+    func()
+  }, [])
 
   return (
     <form className={classes.registrationForm} onSubmit={handleSubmit}>
