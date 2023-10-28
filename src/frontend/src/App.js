@@ -14,6 +14,7 @@ import Signup from './pages/Signup/Signup';
 import Support from './pages/Support/Support';
 import Tariffs from './pages/Tariffs/Tariffs';
 import Payment from './pages/Payment/Payment'
+import Logout from './pages/Logout/Logout';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="introduction" element={<Introduction />} />
           <Route path="login" element={<Login />} />
+          <Route path="logout" element={<Logout />} />
           <Route path="reviews" element={<Reviews />} />
           <Route path="signup" element={<Signup />} />
           <Route path="support" element={<Support />} />

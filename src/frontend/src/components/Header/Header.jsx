@@ -9,7 +9,7 @@ const Header = () => {
   const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
-    const func  = async () => {
+    const func = async () => {
       const result = await checkAuth()
       console.log(result)
       setIsAuth(result)
@@ -32,7 +32,10 @@ const Header = () => {
       <div className={classes.auth}>
         {
           isAuth ?
-            <NavLink className={({ isActive }) => (isActive ? classes.active : '')} to="/profile">Личный кабинет</NavLink>
+            <>
+              <NavLink className={({ isActive }) => (isActive ? classes.active : '')} to="/profile">Личный кабинет</NavLink>
+              <NavLink className={({ isActive }) => (isActive ? classes.active : '')} to="/logout">Выйти</NavLink>
+            </>
             :
             <>
               <NavLink className={({ isActive }) => (isActive ? classes.active : '')} to="/login">Войти</NavLink>
