@@ -1,8 +1,15 @@
 services:
-  aaaa:
-    build: 
+  django:
+    build:
       context: ./src/backend/
-    container_name: aaaa
+    container_name: django
     restart: always
     ports:
       - '8000:8000'
+  frontend:
+    build:
+      context: ./src/frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - 3000:3000
