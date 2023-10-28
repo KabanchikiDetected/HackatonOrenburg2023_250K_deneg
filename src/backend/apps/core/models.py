@@ -5,6 +5,7 @@ from django.contrib.auth.models import (
     UserManager
 )
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -47,7 +48,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=50,
         choices=USER_ROLES
     )
-    
+
+    joined = models.DateTimeField(
+        "Присоединился", default=timezone.now
+    )
+
+    company = models.ForeignKey(
+        "Company", verbose_name="Компания",
+        on_delete=models.CASCADE, blank=True, null=True
+    )
+
     is_staff = models.BooleanField(
         "Django Администратор",
         default=False
@@ -56,15 +66,87 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "birthday"]
+    REQUIRED_FIELDS = [
+        "username", "birthday", "phone",
+        "first_name", "last_name", "role"
+    ]
 
     class Meta:
         db_table = "user"
         verbose_name = "Пользователь"
-        verbose_name = "Пользователи"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self) -> str:
-        return f"User: {self.pk}"
+        return f"User: {self.email}"
 
     def save(self, *args, **kwargs) -> 'User':
         return super(User, self).save(*args, **kwargs)
+
+
+class Employee(models.Model):
+    user = models.OneToOneField(
+        "User", verbose_name="Пользователь",
+        on_delete=models.CASCADE
+    )
+
+    rating = models.FloatField(
+        "Рейтинг", validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
+
+    department = models.ForeignKey(
+        "Department", verbose_name="Отдел",
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        verbose_name = "Работник"
+        verbose_name_plural = "Работники"
+
+    def __str__(self) -> str:
+        return f"Employee: {self.user.email}"
+
+
+class Company(models.Model):
+    title = models.CharField(
+        "Компания", max_length=127
+    )
+
+    description = models.CharField(
+        "Описание", max_length=255
+    )
+
+    created = models.DateTimeField(
+        "Присоединилась", default=timezone.now
+    )
+
+    class Meta:
+        verbose_name = "Компания"
+        verbose_name_plural = "Компании"
+
+    def __str__(self) -> str:
+        return f"Company: {self.title}"
+
+
+class Department(models.Model):
+    company = models.ForeignKey(
+        Company, verbose_name="Компания",
+        on_delete=models.CASCADE
+    )
+
+    title = models.CharField(
+        "Название отдела", max_length=127
+    )
+
+    created = models.DateTimeField(
+        "Создан", default=timezone.now
+    )
+
+    class Meta:
+        verbose_name = "Отдел"
+        verbose_name_plural = "Отделы"
+
+    def __str__(self) -> str:
+        return f"Department: {self.title}"

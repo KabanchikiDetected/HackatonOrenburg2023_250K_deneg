@@ -5,12 +5,16 @@ services:
     env_file:
       - .env
     container_name: educate
+
+  django:
+    build:
+      context: ./src/backend/
+    container_name: django
     restart: always
     links:
       - "mongo:mongodb"
     ports:
       - 8080:8080
-      # - 27017:27017
     depends_on:
       - mongo
 
@@ -21,6 +25,14 @@ services:
       - 27017:27017
     volumes:
       - data:/mongo
+
+  frontend:
+    build:
+      context: ./src/frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - 3000:3000
 
 volumes:
   data:

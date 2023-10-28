@@ -1,0 +1,67 @@
+.container {
+    /* background-color: #222; */
+    color: #fff;
+    padding: 20px;
+  }
+  
+  h2 {
+    color: #fff;
+    font-size: 28px;
+  }
+  
+  .tariffOptions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  
+  .tariffOption {
+    background-color: #444;
+    border-radius: 4px;
+    padding: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tariffOption:hover {
+    background-color: #666;
+  }
+  
+  .tariffOption h3 {
+    color: #fff;
+    font-size: 24px;
+  }
+  
+  .tariffOption p {
+    color: #ccc;
+    font-size: 16px;
+  }
+  
+  .tariffOption button {
+    background-color: #ccc;
+    color: #222;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tariffOption button:hover {
+    background-color: #aaa;
+  }
+  
+  .tariffOption.selected {
+    background-color: #888;
+  }
+  
+  .tariffDetails {
+    margin-top: 20px;
+  }
+  
+  .tariffDetails h3 {
+    color: #fff;
+  }
