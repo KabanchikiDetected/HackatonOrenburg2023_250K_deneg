@@ -4,6 +4,7 @@ import database
 
 
 class GuideRead(database.IdMixin, BaseModel):
+    department_id: int
     content: str  # HTML в сыром виде.
     tests: list[database.PyObjectId]  # Id тестов.
 
@@ -12,10 +13,12 @@ class GuideRead(database.IdMixin, BaseModel):
         return [str(id) for id in tests]
 
 class GuideCreate(BaseModel):
+    department_id: int
     content: str  # HTML в сыром виде.
     tests: list[database.PyObjectId] = []  # Id тестов.
 
 
 class GuideUpdate(BaseModel):
+    department_id: int
     content: str  # HTML в сыром виде.
     tests: list[database.PyObjectId]  # Id тестов.
