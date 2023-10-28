@@ -167,7 +167,6 @@ const createCompany = async () => {
   updateUser({company: company.id})
   
   return company
-
 }
 
 const logout = () => {
