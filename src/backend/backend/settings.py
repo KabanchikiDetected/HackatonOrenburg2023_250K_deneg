@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.core.apps.CoreConfig',
+    'api.education.apps.EducationConfig',
+    'api.companies.apps.CompaniesConfig',
     'api.users.apps.UsersConfig',
     'phonenumber_field',
     'corsheaders',

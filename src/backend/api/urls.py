@@ -24,5 +24,6 @@ urlpatterns = [
         name='schema-swagger-ui'
     ),
     path('', include('api.users.urls')),
-    path('', include('api.companies.urls'))
+    path('', include('api.companies.urls')),
+    path('education/', include('api.education.urls'))
 ]
