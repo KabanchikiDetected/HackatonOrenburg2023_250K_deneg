@@ -19,7 +19,10 @@ async def get_all(request: Request):
 @router.get(
     '/{id}',
     response_model=schemas.TestReadAdmin)
-async def get_one(request: Request, id: Annotated[str, Path()]):
+async def get_one(
+    request: Request, 
+    id: Annotated[str, Path()]
+    ):
     item = await service.get_one(id)
     if item is None:
         raise HTTPException(

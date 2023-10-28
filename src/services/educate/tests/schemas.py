@@ -28,7 +28,7 @@ class QuestionrRead(BaseModel):
 
 
 class QuestionReadAdmin(QuestionrRead):
-    answers: str
+    answers: list[str]
 
 
 class TestRead(BaseModel):

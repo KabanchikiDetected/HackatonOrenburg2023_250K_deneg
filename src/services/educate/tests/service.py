@@ -11,7 +11,7 @@ from . import schemas
 table = db['tests']
 logger = logging.getLogger(__name__)
 
-async def get_one(id: int):
+async def get_one(id: str):
     item = await table.find_one({"_id": ObjectId(id)})
     return item
 
@@ -28,14 +28,14 @@ async def create(data: dict[str, Any]):
 
 
 async def update(id: int, data: dict[str, Any]):
-    res = await table.update_one({'_id': id}, {'$set': data})
+    res = await table.update_one({'_id': ObjectId(id)}, {'$set': data})
     if res.modified_count != 1:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return await get_one(id)
 
 
 async def delete(id: int):
-    res = await table.delete_one({'_id': id})
+    res = await table.delete_one({'_id': ObjectId(id)})
     return res.deleted_count == 1
 
 
