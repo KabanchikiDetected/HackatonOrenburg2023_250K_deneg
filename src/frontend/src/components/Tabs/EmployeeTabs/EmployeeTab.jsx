@@ -10,7 +10,7 @@ const EmployeeTab = () => {
     {
         name: "Компания",
         value: "company",
-        component: <CompanyInfoTab />
+        component: <CompanyEditTab />
     },
     {
         name: "Мои данные",
