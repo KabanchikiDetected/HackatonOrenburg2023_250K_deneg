@@ -26,7 +26,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
 
 class EmployeeSeializer(serializers.ModelSerializer):
     joined = serializers.DateTimeField(read_only=True)
-    user = serializers.RelatedField(read_only=True)
     first_name = serializers.CharField(
         source="user.first_name", read_only=True
     )
