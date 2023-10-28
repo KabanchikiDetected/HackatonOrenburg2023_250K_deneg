@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, Request
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 
 import database
@@ -13,6 +14,19 @@ api_router.include_router(guides.router.router)
 
 app = FastAPI(lifespan=database.lifespan)
 app.include_router(api_router)
+
+
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/version')
