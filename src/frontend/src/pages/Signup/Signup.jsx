@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import classes from './Signup.module.css';
+import { register, login } from '../../http';
 
 const Signup = () => {
   const [email, setEmail] = useState('');
@@ -9,8 +11,11 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [phone, setPhone] = useState('');
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     const userData = {
@@ -18,27 +23,21 @@ const Signup = () => {
       password,
       birthday,
       username,
-      name,
-      surname,
-      phone
+      first_name: name,
+      last_name: surname,
+      phone,
+      role: "company_admin"
     };
 
-    fetch('http://127.0.0.1:8000/api/auth/users/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(userData)
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Обработка ответа от сервера
-      console.log(data);
-    })
-    .catch(error => {
-      // Обработка ошибки
-      console.error(error);
-    });
+    const result = await register(userData)
+
+    if (result === 201) {
+      login(email, password)
+      navigate("/profile")
+    }
+    else {
+      setError("Проверьте введенные данные.")
+    }
   };
 
   return (
@@ -72,14 +71,22 @@ const Signup = () => {
 
       <div className={classes.formGroup}>
         <label htmlFor="birthday">День рождения:</label>
-        <input type="text" id="birthday" value={birthday} onChange={(e) => setBirthday(e.target.value)} pattern="\d{4}-\d{2}-\d{2}" required />
-        <small>Формат: YYYY-MM-DD</small>
+        <input type="date" id="birthday" value={birthday} onChange={(e) => setBirthday(e.target.value)} pattern="\d{4}-\d{2}-\d{2}" required />
       </div>
 
       <div className={classes.formGroup}>
         <label htmlFor="password">Пароль:</label>
         <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
+
+      <p style={{ color: "red", fontSize: "14px" }}>
+        {
+          error ?
+            error
+            :
+            ""
+        }
+      </p>
 
       <button type="submit">Зарегистрироваться</button>
     </form>

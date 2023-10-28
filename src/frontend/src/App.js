@@ -19,9 +19,9 @@ import Payment from './pages/Payment/Payment'
 function App() {
   return (
     <div className="wrapper">
-      <Header/>
+      <Header />
 
-        <div className="container">
+      <div className="container">
         <Routes>
           <Route index element={<Index />} />
           <Route path="profile" element={<Profile />} />
@@ -33,9 +33,9 @@ function App() {
           <Route path="tariffs" element={<Tariffs />} />
           <Route path="payment" element={<Payment />} />
         </Routes>
-        </div>
+      </div>
 
-      <Footer/>
+      <Footer />
     </div>
   );
 }

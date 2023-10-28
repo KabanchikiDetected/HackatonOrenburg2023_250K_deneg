@@ -9,8 +9,8 @@ const Footer = () => {
   return (
     <footer className={classes.footer}>
         <div className={classes.navigation}>
-            <div className={classes.logo}>
-                <img src={logo} alt="LOGO" />
+            <div>
+                <img className={classes.logo} src={logo} alt="LOGO" />
             </div>
             <nav className={classes.headerRight}>
                 <NavLink to="/">Возможности</NavLink>

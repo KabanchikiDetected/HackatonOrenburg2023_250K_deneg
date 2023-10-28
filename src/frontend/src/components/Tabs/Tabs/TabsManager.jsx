@@ -20,11 +20,12 @@ const TabsManager = ({ tabs }) => {
                     >
                         {tab.name}
                     </button>
+
                 })}
             </div>
             <div className={classes.tabContent}>
                 {tabs.map(tab => {
-                    return activeTab === tab.value && tab.component
+                    return activeTab === tab.value && <div key={tab.value}> {tab.component}</div>
                 })}
             </div>
         </div>

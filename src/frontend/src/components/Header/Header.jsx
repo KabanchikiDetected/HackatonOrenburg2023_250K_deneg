@@ -2,36 +2,25 @@ import React, { useState, useEffect } from "react";
 import classes from "./Header.module.css";
 import logo from "../../assets/logo.svg"
 import { NavLink } from 'react-router-dom';
+import { checkAuth } from '../../http'
 
 
 const Header = () => {
   const [isAuth, setIsAuth] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-
-    if (token) {
-      fetch("http://127.0.0.1:8000/api/users/", {
-        method: 'GET',
-        headers: new Headers({
-          'Authorization': 'Token ' + token,
-          'Content-Type': 'application/json'
-        }),
-      })
-        .then(response => {
-          if (response.ok) {
-            setIsAuth(true)
-          } else {
-            setIsAuth(false)
-          }
-        })
+    const func  = async () => {
+      const result = await checkAuth()
+      console.log(result)
+      setIsAuth(result)
     }
+    func()
   });
 
   return (
     <header className={classes.header}>
       <div className={classes.logo}>
-        <img src={logo} alt="LOGO" />
+        <img className={classes.logo} src={logo} alt="LOGO" />
       </div>
       <nav className={classes.headerRight}>
         <NavLink className={({ isActive }) => (isActive ? classes.active : '')} to="/">Возможности</NavLink>
