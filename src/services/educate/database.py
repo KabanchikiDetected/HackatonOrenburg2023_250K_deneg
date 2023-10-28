@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
-from typing import Annotated
 
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import Field, field_serializer
 
 from config import settings
 
@@ -36,3 +36,11 @@ class PyObjectId(ObjectId):
     @classmethod
     def __get_pydantic_json_schema__(cls, core_schema, handler):
         return {'type': 'string'}
+
+
+class IdMixin:
+    id: PyObjectId = Field(default_factory=ObjectId, alias="_id")
+
+    @field_serializer('id')
+    def serializer_id(self, id: PyObjectId, _info):
+        return str(id)

@@ -16,8 +16,8 @@ async def get_one(id: str):
     return item
 
 
-async def get_all():
-    return await table.find().to_list(100)
+async def get_all(**filters):
+    return await table.find(filters).to_list(100)
 
 
 async def create(data: dict[str, Any]):
@@ -48,3 +48,4 @@ async def check_test(test_id: str, answers: list[list[str]]):
         test_id=test_id,
         correct=correct,
         total=test['total'])
+

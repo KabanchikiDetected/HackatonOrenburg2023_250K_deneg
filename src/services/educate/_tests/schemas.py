@@ -19,7 +19,7 @@ class QuestionUpdate(BaseModel):
 
 class QuestionrRead(BaseModel):
     model_config = {
-        'extra': 'allow'
+        'extra': 'ignore'
     }
 
     question: str
@@ -31,20 +31,20 @@ class QuestionReadAdmin(QuestionrRead):
     answers: list[str]
 
 
-class TestRead(BaseModel):
+class TestRead(database.IdMixin, BaseModel):
     model_config = {
-        'extra': 'allow'
+        'extra': 'ignore'
     }
 
-    id: database.PyObjectId = Field(default_factory=database.ObjectId, alias="_id")
     title: str
+    guide_id: database.PyObjectId | None = None
     max_result: int
     total: int  # Кол-во вопросов в тесте.
     questions: list[QuestionrRead]
 
-    @field_serializer('id')
-    def serializer_id(self, id: database.PyObjectId, _info):
-        return str(id)
+    @field_serializer('guide_id')
+    def serializer_guide_id(self, guide_id: database.PyObjectId, _info):
+        return str(guide_id)
 
 
 class TestReadAdmin(TestRead):
@@ -53,6 +53,7 @@ class TestReadAdmin(TestRead):
 
 class TestCreate(BaseModel):
     title: str
+    guide_id: database.PyObjectId | None = None
     questions: list[QuestionCreate]
     max_result: int
     total: int  # Кол-во вопросов в тесте.
@@ -60,10 +61,10 @@ class TestCreate(BaseModel):
 
 class TestUpdate(BaseModel):
     title: str
+    guide_id: str | None = None
     questions: list[QuestionUpdate]
     max_result: int
     total: int  # Кол-во вопросов в тесте.
-
 
 
 class TestResultOtput(BaseModel):
