@@ -20,7 +20,7 @@ def generate_questions(n=5):
 
 def generate_tests(n=10):
     tests = []
-    for i in range(1 + n, n + n + 1):
+    for i in range(1, n + 1):
         test = {
             # "_id": database.ObjectId(str(i)),
             "title": f"Тест{i}",

@@ -4,7 +4,7 @@ services:
       context: ./src/services/educate
     restart: always
     env_file:
-      - .env
+      - .env.example
     container_name: educate
     ports:
       - 8080:8080
@@ -39,6 +39,15 @@ services:
     restart: always
     ports:
       - 3000:3000
+
+  postgres:
+    image: postgres:13.3
+    env_file:
+      - .env.example
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/postgres
 
 volumes:
   data:
