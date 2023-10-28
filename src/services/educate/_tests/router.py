@@ -20,7 +20,7 @@ async def get_all(request: Request):
     '/{id}',
     response_model=schemas.TestReadAdmin)
 async def get_one(
-    request: Request, 
+    request: Request,
     id: Annotated[str, Path()]
     ):
     item = await service.get_one(id)
@@ -62,10 +62,12 @@ async def delete(
 
 
 @router.post(
-    '/check/{id}',
+    '/{id}/check',
     response_model=schemas.TestResultOtput)
 async def check_test(
     id: Annotated[str, Path()],
     answers: Annotated[list[list[str]], Body()]
     ):
-    return await service.check_test(id, answers)
+    # ! Юзера вытаскивай из токена.
+    results = await service.check_test(id, answers, 0)
+    return results

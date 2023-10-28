@@ -39,13 +39,14 @@ async def delete(id: int):
     return res.deleted_count == 1
 
 
-async def check_test(test_id: str, answers: list[list[str]]):
+async def check_test(test_id: str, answers: list[list[str]], user_id: int):
     test = await get_one(test_id)
     correct = 0
-    for question, user_answer in  zip(test['questions'], answers):
+    for question, user_answer in zip(test['questions'], answers):
         correct += question['answers'] == user_answer
     return schemas.TestResultOtput(
         test_id=test_id,
+        user_id=user_id,
         correct=correct,
         total=test['total'])
 

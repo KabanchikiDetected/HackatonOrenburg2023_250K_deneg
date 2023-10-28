@@ -1,3 +1,5 @@
+import datetime
+
 from pydantic import BaseModel, Field, field_serializer
 
 import database
@@ -69,8 +71,10 @@ class TestUpdate(BaseModel):
 
 class TestResultOtput(BaseModel):
     test_id: database.PyObjectId = Field(default_factory=database.ObjectId, alias="test_id")
+    user_id: int
     correct: int
     total: int
+    time: datetime.datetime = Field(default_factory=datetime.datetime.now)
 
     @field_serializer('test_id')
     def serializer_id(self, test_id: database.PyObjectId, _info):
