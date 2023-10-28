@@ -21,6 +21,8 @@ services:
       context: ./src/backend/
     container_name: django
     restart: always
+    env_file:
+      - .env.example
     ports:
       - 8000:8000
 
