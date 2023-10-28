@@ -1,8 +1,26 @@
 services:
-  aaaa:
-    build: 
-      context: ./src/backend/
-    container_name: aaaa
+  educate:
+    build:
+      context: ./src/services/educate
+    env_file:
+      - .env
+    container_name: educate
     restart: always
+    links:
+      - "mongo:mongodb"
     ports:
-      - '8000:8000'
+      - 8080:8080
+      # - 27017:27017
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/mongo
+
+volumes:
+  data:
