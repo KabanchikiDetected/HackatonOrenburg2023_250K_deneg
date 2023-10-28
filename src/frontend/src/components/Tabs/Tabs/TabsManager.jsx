@@ -12,7 +12,6 @@ const TabsManager = ({ tabs }) => {
         <div className={classes.tabs}>
             <div className={classes.tabList}>
                 {tabs.map(tab => {
-                    { console.log(tab) }
                     return <button
                         key={tab.value}
                         className={activeTab === tab.value ? classes.active : ''}
