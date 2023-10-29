@@ -4,7 +4,7 @@ services:
       context: ./src/services/educate
     restart: always
     env_file:
-      - .env
+      - .env.example
     container_name: educate
     ports:
       - 8080:8080
@@ -21,8 +21,13 @@ services:
       context: ./src/backend/
     container_name: django
     restart: always
+    command: ["bash", "start.sh"]
+    env_file:
+      - .env.example
     ports:
       - 8000:8000
+    depends_on:
+      - postgres
 
   mongo:
     image: mongo
@@ -39,6 +44,16 @@ services:
     restart: always
     ports:
       - 3000:3000
+
+  postgres:
+    image: postgres:13.3
+    container_name: postgres
+    env_file:
+      - .env.example
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/postgres
 
 volumes:
   data:

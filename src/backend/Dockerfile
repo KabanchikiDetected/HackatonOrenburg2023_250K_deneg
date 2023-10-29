@@ -10,8 +10,3 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
-
-RUN python manage.py migrate
-
-# CMD gunicorn app.backend.wsgi
-CMD python manage.py runserver 0.0.0.0:8000
