@@ -5,3 +5,6 @@ __pycache__/
 
 venv
 .env
+node_modules/
+.DS_Store
+db.sqlite3

@@ -1,8 +1,87 @@
 services:
-  aaaa:
-    build: 
+  educate:
+    build:
+      context: ./src/services/educate
+    restart: always
+    env_file:
+      - .env.example
+    container_name: educate
+    ports:
+      - 8080:8080
+    links:
+      - "mongo:mongodb"
+      - "django:django"
+    depends_on:
+      - mongo
+
+  django:
+    build:
       context: ./src/backend/
-    container_name: aaaa
+    container_name: django
+    restart: always
+    command: ["bash", "start.sh"]
+    env_file:
+      - .env.example
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    links:
+        - "postgres:postgres"
+
+  review:
+    build:
+      context: ./src/services/review
+    restart: always
+    env_file:
+      - .env.example
+    container_name: review
+    ports:
+      - 8081:8081
+    links:
+      - "mongo:mongodb"
+    depends_on:
+      - mongo
+
+  support:
+    build:
+      context: ./src/services/support
+    restart: always
+    env_file:
+      - .env.example
+    container_name: support
+    ports:
+      - 8082:8082
+    links:
+      - "mongo:mongodb"
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/mongo
+
+  frontend:
+    build:
+      context: ./src/frontend
+    container_name: frontend
     restart: always
     ports:
-      - '8000:8000'
+      - 3000:3000
+
+  postgres:
+    image: postgres:13.3
+    container_name: postgres
+    env_file:
+      - .env.example
+    ports:
+      - "5432:5432"
+    volumes:
+      - data:/postgres
+
+volumes:
+  data:

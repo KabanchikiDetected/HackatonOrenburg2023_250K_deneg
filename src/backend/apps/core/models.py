@@ -7,6 +7,7 @@ from django.contrib.auth.models import (
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
 from phonenumber_field.modelfields import PhoneNumberField
+from PIL import Image
 
 
 USER_ROLES = (
@@ -17,7 +18,6 @@ USER_ROLES = (
 )
 
 
-# TODO: add company
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(
         "Username",
@@ -53,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     joined = models.DateTimeField(
         "Присоединился", default=timezone.now
     )
-    
+
     company = models.ForeignKey(
         "Company", verbose_name="Компания",
         on_delete=models.CASCADE, blank=True, null=True
@@ -63,11 +63,18 @@ class User(AbstractBaseUser, PermissionsMixin):
         "Django Администратор",
         default=False
     )
+    
+    recovery_code = models.CharField(
+        "Код восстановления", default="", max_length=5
+    )
 
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "birthday"]
+    REQUIRED_FIELDS = [
+        "username", "birthday", "phone",
+        "first_name", "last_name", "role"
+    ]
 
     class Meta:
         db_table = "user"
@@ -91,18 +98,22 @@ class Employee(models.Model):
         "Рейтинг", validators=[
             MinValueValidator(1),
             MaxValueValidator(5)
-        ]
+        ], default=5.0
     )
-    
+
     department = models.ForeignKey(
         "Department", verbose_name="Отдел",
         on_delete=models.CASCADE
     )
-    
+
+    is_active = models.BooleanField(
+        "Активен?", default=True
+    )
+
     class Meta:
         verbose_name = "Работник"
         verbose_name_plural = "Работники"
-    
+
     def __str__(self) -> str:
         return f"Employee: {self.user.email}"
 
@@ -111,13 +122,18 @@ class Company(models.Model):
     title = models.CharField(
         "Компания", max_length=127
     )
-    
+
     description = models.CharField(
         "Описание", max_length=255
     )
-    
+
     created = models.DateTimeField(
         "Присоединилась", default=timezone.now
+    )
+
+    image = models.ImageField(
+        "Логотип", upload_to="media/logo",
+        default="default_logo.png"
     )
 
     class Meta:
@@ -126,6 +142,13 @@ class Company(models.Model):
 
     def __str__(self) -> str:
         return f"Company: {self.title}"
+    
+    def save(self, *args, **kwargs):
+        super(Company, self).save(*args, **kwargs)
+        img = Image.open(self.photo.path)
+        if img.height > 500 or img.width > 500:
+            img.thumbnail((500, 500))
+            img.save(self.photo.path)
 
 
 class Department(models.Model):
@@ -133,18 +156,18 @@ class Department(models.Model):
         Company, verbose_name="Компания",
         on_delete=models.CASCADE
     )
-    
+
     title = models.CharField(
         "Название отдела", max_length=127
     )
-    
+
     created = models.DateTimeField(
         "Создан", default=timezone.now
     )
-    
+
     class Meta:
         verbose_name = "Отдел"
         verbose_name_plural = "Отделы"
-    
+
     def __str__(self) -> str:
         return f"Department: {self.title}"
