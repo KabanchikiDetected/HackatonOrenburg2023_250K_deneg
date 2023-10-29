@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './TabsManager.module.css'
 
 const TabsManager = ({ tabs }) => {
-    const [activeTab, setActiveTab] = useState(tabs[1].value);
+    const [activeTab, setActiveTab] = useState(tabs[0].value);
 
     const handleTabChange = (tab) => {
         setActiveTab(tab);
