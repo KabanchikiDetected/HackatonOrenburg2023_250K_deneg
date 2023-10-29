@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import *
+from api.users.serializers import EmployeeSeializer
 from .permissions import *
-from apps.core.models import Company
+from apps.core.models import Company, Employee
 
 FORBIDDEN_DETAIL = {
     "detail": "У вас недостаточно прав для выполнения данного действия."
@@ -86,6 +87,19 @@ class DepartmentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = (IsAuthenticated,)
+    
+    
+    # TODO: add employees
+    # TODO: employee put and patch user_id
+    def get(self, request, pk, *args, **kwargs):
+        employees = Employee.objects.filter(department=pk)
+        department = Department.objects.get(pk=pk)
+        serializer = DepartmentSerializer(department)
+        employee_serializer = EmployeeSeializer(employees, many=True)
+        data = serializer.data
+        data["employees"] = employee_serializer.data
+        return Response(data, status=status.HTTP_200_OK)
+    
 
     def put(self, request, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:
