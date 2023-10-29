@@ -12,12 +12,15 @@ api_router = APIRouter(prefix='/api')
 api_router.include_router(_tests.router.router)
 api_router.include_router(guides.router.router)
 
-app = FastAPI(lifespan=database.lifespan)
+app = FastAPI(
+    lifespan=database.lifespan
+    )
 app.include_router(api_router)
 
 
 origins = [
-    "*"
+    "http://localhost",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
