@@ -7,7 +7,8 @@ class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            "pk", "email", "first_name", "last_name", "role"
+            "pk", "email", "first_name", "last_name", "role", "birthday",
+            "password"
         )
 
 
@@ -38,6 +39,9 @@ class UserResetPasswordConfirmationSerializer(serializers.ModelSerializer):
 
 class EmployeeSeializer(serializers.ModelSerializer):
     joined = serializers.DateTimeField(read_only=True)
+    email = serializers.CharField(
+        source="user.email", read_only=True
+    )
     first_name = serializers.CharField(
         source="user.first_name", read_only=True
     )
