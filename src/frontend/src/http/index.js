@@ -169,8 +169,17 @@ const createCompany = async () => {
   return company
 }
 
+const getEmployee = async () => {
+  const user = await getUser()
+  
+  if (user && user.role === "employee") {
+    const employees = getAuthenticatedRequest("employees")
+  }
+}
+
+
 const logout = () => {
   localStorage.removeItem('token');
 };
 
-export { $api, login, register, getAuthenticatedRequest, sendRequest, logout, checkAuth, getUser, getUserCompany, createCompany, updateUser };
+export { $api, login, register, getAuthenticatedRequest, sendRequest, logout, checkAuth, getUser, getUserCompany, createCompany, updateUser, putAuthenticatedRequest };

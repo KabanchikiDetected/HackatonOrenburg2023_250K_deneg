@@ -5,6 +5,27 @@
     margin-bottom: 20px;
 }
 
+.companyTab label {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.companyTab textarea {
+    width: 500px;
+    height: 250px;
+    resize: none;
+}
+
+.companyTab input {
+    width: 500px;
+    margin: 0;
+}
+
+.logoOut {
+    width: 100px;
+}
+
 .logo {
     width: 100px;
     height: 100px;

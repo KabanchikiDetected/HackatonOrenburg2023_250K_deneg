@@ -12,7 +12,7 @@ const EmployeeTab = () => {
     {
         name: "Компания",
         value: "company",
-        component: <CompanyInfoTab />
+        component: <CompanyEditTab />
     },
     {
         name: "Отдел",
@@ -30,7 +30,7 @@ const EmployeeTab = () => {
         component: <TestHistoryTab />
     },
     {
-        name: "Новые тесты",
+        name: "Обучение",
         value: "newTests",
         component: <TestTab />
     },
