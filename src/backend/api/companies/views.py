@@ -34,13 +34,27 @@ class CompanyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CompanySerializer
     permission_classes = (IsAuthenticated,)
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request, pk, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:
+            image = request.data["image"]
+            if image != "":
+                company = Company.objects.get(pk=pk)
+                company.image = image
+                company.save()
+                serializer = CompanySerializer(company)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return super().put(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request, pk, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:
+            image = request.data["image"]
+            if image != "":
+                company = Company.objects.get(pk=pk)
+                company.image = image
+                company.save()
+                serializer = CompanySerializer(company)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return super().patch(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
 
@@ -89,8 +103,6 @@ class DepartmentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
     
     
-    # TODO: add employees
-    # TODO: employee put and patch user_id
     def get(self, request, pk, *args, **kwargs):
         employees = Employee.objects.filter(department=pk)
         department = Department.objects.get(pk=pk)
