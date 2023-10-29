@@ -71,6 +71,15 @@ class DepartmentListAPIView(generics.ListCreateAPIView):
         if request.user.role in ["company_admin", "administrator"]:
             return super().post(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
+    
+    def get(self, request, *args, **kwargs):
+        company_id: str = request.GET.get("company", default="")
+        if company_id == "" or not company_id.isdigit():
+            return super().get(request, *args, **kwargs)
+        else:
+            departments = Department.objects.filter(company=company_id)
+            serializer = DepartmentSerializer(departments, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class DepartmentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
