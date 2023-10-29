@@ -13,8 +13,6 @@ services:
       - "django:django"
     depends_on:
       - mongo
-    volumes:
-      - data:/django
 
   django:
     build:
@@ -30,6 +28,20 @@ services:
       - postgres
     links:
         - "postgres:postgres"
+
+  review:
+    build:
+      context: ./src/services/review
+    restart: always
+    env_file:
+      - .env.example
+    container_name: review
+    ports:
+      - 8081:8081
+    links:
+      - "mongo:mongodb"
+    depends_on:
+      - mongo
 
   mongo:
     image: mongo
