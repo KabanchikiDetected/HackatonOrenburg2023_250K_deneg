@@ -15,7 +15,7 @@ urlpatterns = [
         name="department_list"
         ),
     path(
-        'department/<int:pk>',
+        'department/<int:pk>/',
         DepartmentDetailAPIView.as_view(),
         name="department_detail"
     )
