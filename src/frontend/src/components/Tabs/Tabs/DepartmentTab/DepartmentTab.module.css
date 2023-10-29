@@ -67,3 +67,27 @@
 .departmentMain button {
     margin: 0;
 }
+
+.departmentItem input {
+    margin: 0;
+}
+
+.whiteLine {
+    border-bottom: 3px solid white;
+    margin-bottom: 30px;
+}
+
+.grayLine {
+    border-bottom: 1px solid gray;
+}
+
+.table {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.col {
+    width: 40%;
+}

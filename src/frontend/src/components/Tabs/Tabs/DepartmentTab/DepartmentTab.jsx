@@ -49,14 +49,19 @@ const DepartmentsList = ({ company }) => {
     const fetchDepartments = async () => {
         try {
             const token = localStorage.getItem("token")
-            const response = await $api.get("department/", {
+            const response = await $api.get(`department/?company=${company.id}`, {
                 headers: {
                     "Authorization": `Token ${token}`
                 }
             });
 
-            console.log(response.data)
-            setDepartments(response.data);
+            const data = response.data.sort((a, b) => {
+                return a.id - b.id || a.title.localeCompare(b.title);
+            });
+
+            console.log(data)
+
+            setDepartments(data);
         } catch (error) {
             console.error("Ошибка при получении списка отделов", error);
         }
@@ -126,27 +131,61 @@ const DepartmentsList = ({ company }) => {
         fetchDepartments()
     }
 
+    const updateDepartment = async () => {
+        const token = localStorage.getItem("token")
+
+        const response = await $api.put(`department/${currentDepartment.id}/`, {
+            company: company.id,
+            title: currentDepartment.title
+        }, {
+            headers: {
+                'Authorization': `Token ${token}`,
+                'Content-Type': 'application/json; charset=UTF-8'
+            }
+        })
+
+        fetchDepartments()
+
+        setCurrentDepartment({})
+        setEditDeparment(false)
+    }
+
     return (
         <div>
             {departments.map((department) => (
                 <div key={department.id}>
                     <div className={classes.departmentItem}>
                         {
-                            currentDepartment == department.id && editDepartment
+                            currentDepartment.id === department.id && editDepartment
                                 ?
-                                <input
-                                    type="text"
-                                    id="departmentName"
-                                    name="departmentName"
-                                    value={currentDepartment.name}
-                                    onChange={(event) => (setCurrentDepartment({ ...currentDepartment, title: event.target.value }))}
-                                />
+                                <>
+                                    <div className={classes.departmentMain}>
+                                        <input
+                                            type="text"
+                                            id="departmentName"
+                                            name="departmentName"
+                                            value={currentDepartment.title}
+                                            onChange={(event) => (setCurrentDepartment({ ...currentDepartment, title: event.target.value }))}
+                                        />
+                                        <button onClick={updateDepartment}>Сохранить</button>
+                                    </div>
+                                </>
                                 :
                                 <div className={classes.departmentMain}>
-                                    <h4>{department.title}</h4>
+                                    <h3>{department.title}</h3>
                                     <button onClick={() => handleEditClick(department)}>Редактировать</button>
                                 </div>
                         }
+                    </div>
+
+                    <div>
+                        <h4>Сотрудники:</h4>
+                        <ul>
+                            {/* {departments.employees.map((employee) => {
+                                    <li>{employee.first_name} {employee.last_name}</li>
+                                })} */}
+                        </ul>
+                        <div className={classes.grayLine}></div>
                     </div>
 
                     {/* Список сотрудников */}
@@ -184,6 +223,7 @@ const DepartmentsList = ({ company }) => {
                     {/* <button onClick={() => handleSaveClick(department.id, updatedDepartment)}>
                         Сохранить изменения
                     </button> */}
+                    <div className={classes.whiteLine}></div>
                 </div>
             ))}
 
