@@ -19,5 +19,6 @@ urlpatterns = [
         'employees/<int:pk>/',
         EmployeeDetailAPIView.as_view(),
         name="employee_detail"
-    )
+    ),
+    path("register/hr/", RegisterHr.as_view(), name="register_hr")
 ]

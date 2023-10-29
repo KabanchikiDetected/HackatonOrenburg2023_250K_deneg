@@ -7,6 +7,7 @@ import TestHistoryTab from '../Tabs/TestTab/TestHistoryTab';
 import UserInfoTab from '../Tabs/UserInfoTab/UserInfoTab';
 import TestTab from '../Tabs/TestTab/TestTab';
 import { getUserCompany } from '../../../http';
+import HrInfoTab from '../Tabs/HrTabs/HrTabs';
 
 const CompanyAdministratorTab = () => {
     const [company, setCompany] = useState(undefined)
@@ -23,19 +24,19 @@ const CompanyAdministratorTab = () => {
                 component: <CompanyEditTab />
             },
             {
-                name: "Отдел",
+                name: "Отделы",
                 value: "department",
                 component: <DepartmentsList company={company} />
+            },
+            {
+                name: "HR`s",
+                value: "hrs",
+                component: <HrInfoTab company={company} />
             },
             {
                 name: "Мои данные",
                 value: "userInfo",
                 component: <UserInfoTab />
-            },
-            {
-                name: "Создать тест",
-                value: "createTest",
-                component: <CreateTestTab />
             }
         ])
     }
