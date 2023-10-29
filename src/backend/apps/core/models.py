@@ -142,13 +142,6 @@ class Company(models.Model):
 
     def __str__(self) -> str:
         return f"Company: {self.title}"
-    
-    def save(self, *args, **kwargs):
-        super(Company, self).save(*args, **kwargs)
-        img = Image.open(self.photo.path)
-        if img.height > 500 or img.width > 500:
-            img.thumbnail((500, 500))
-            img.save(self.photo.path)
 
 
 class Department(models.Model):
