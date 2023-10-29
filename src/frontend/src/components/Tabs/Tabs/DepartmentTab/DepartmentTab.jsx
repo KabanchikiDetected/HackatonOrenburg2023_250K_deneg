@@ -42,6 +42,16 @@ const DepartmentsList = ({ company }) => {
     const [addDepartment, setAddDepartment] = useState(false)
     const [newDepartmentName, setNewDepartmentName] = useState("")
 
+    const [addEmployee, setAddEmployee] = useState(false)
+    const [addEmployeeDepartment, setAddEmployeeDepartment] = useState({})
+
+    const [employeeEmail, setEmployeeEmail] = useState("")
+    const [employeeFirstName, setEmployeeFirstName] = useState("")
+    const [employeeLastName, setEmployeeLastName] = useState("")
+    const [employeeBirthday, setEmployeeBirthday] = useState("")
+    const [employeePhone, setEmployeePhone] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
+
     useEffect(() => {
         fetchDepartments();
     }, []);
@@ -58,8 +68,6 @@ const DepartmentsList = ({ company }) => {
             const data = response.data.sort((a, b) => {
                 return a.id - b.id || a.title.localeCompare(b.title);
             });
-
-            console.log(data)
 
             setDepartments(data);
         } catch (error) {
@@ -150,6 +158,45 @@ const DepartmentsList = ({ company }) => {
         setEditDeparment(false)
     }
 
+    const addEmployeeFunc = async (department) => {
+        setAddEmployeeDepartment(department)
+        setAddEmployee(true)
+    }
+
+    const stopAddEmployee = async () => {
+        setAddEmployee(false)
+        setAddEmployeeDepartment({})
+    }
+
+    const registerEmployee = async () => {
+        const employeeData = {
+            email: employeeEmail,
+            first_name: employeeFirstName,
+            last_name: employeeLastName,
+            phone: employeePhone,
+            birthday: employeeBirthday,
+            department_id: addEmployeeDepartment.id,
+            company_id: company.id,
+        }
+
+        const token = localStorage.getItem("token")
+        try {
+
+            const response = await $api.post("employees/", employeeData, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                    'Content-Type': 'application/json; charset=UTF-8'
+                }
+            })
+            
+            stopAddEmployee()
+        }
+        catch (erorr) {
+            setErrorMessage("Пользователь с такими данными уже существует.")
+        }
+            
+    }
+
     return (
         <div>
             {departments.map((department) => (
@@ -181,12 +228,88 @@ const DepartmentsList = ({ company }) => {
                     <div>
                         <h4>Сотрудники:</h4>
                         <ul>
-                            {/* {departments.employees.map((employee) => {
-                                    <li>{employee.first_name} {employee.last_name}</li>
-                                })} */}
+                            {department.employees.map((employee, index) => {
+                                return <div key={index}>
+                                    {console.log(employee)}
+                                    <li>{employee.first_name} {employee.last_name} (Рейтинг: {employee.rating})</li>
+                                </div>
+                            })}
                         </ul>
                         <div className={classes.grayLine}></div>
                     </div>
+
+                    {
+                        addEmployee && addEmployeeDepartment.id === department.id ?
+                            <div>
+                                <div className={classes.field}>
+                                    <label htmlFor="employeeEmail">Почта сотрдуника:</label>
+                                    <input
+                                        type="text"
+                                        id="employeeEmail"
+                                        name="employeeEmail"
+                                        value={employeeEmail}
+                                        onChange={(event) => setEmployeeEmail(event.target.value)}
+                                    />
+                                </div>
+                                <div className={classes.field}>
+                                    <label htmlFor="employeeFirstName">Имя сотрудника:</label>
+                                    <input
+                                        type="text"
+                                        id="employeeFirstName"
+                                        name="employeeFirstName"
+                                        value={employeeFirstName}
+                                        onChange={(event) => setEmployeeFirstName(event.target.value)}
+                                    />
+                                </div>
+                                <div className={classes.field}>
+                                    <label htmlFor="employeeLastName">Фамилия сотрудника:</label>
+                                    <input
+                                        type="text"
+                                        id="employeeLastName"
+                                        name="employeeLastName"
+                                        value={employeeLastName}
+                                        onChange={(event) => setEmployeeLastName(event.target.value)}
+                                    />
+                                </div>
+                                <div className={classes.field}>
+                                    <label htmlFor="employeeBirthday">Дата рождения сотрудника:</label>
+                                    <input
+                                        type="date"
+                                        id="employeeBirthday"
+                                        name="employeeBirthday"
+                                        value={employeeBirthday}
+                                        onChange={(event) => setEmployeeBirthday(event.target.value)}
+                                    />
+                                </div>
+                                <div className={classes.field}>
+                                    <label htmlFor="employeePhone">Телефон сотрудника:</label>
+                                    <input
+                                        type="phone"
+                                        id="employeePhone"
+                                        name="employeePhone"
+                                        value={employeePhone}
+                                        onChange={(event) => setEmployeePhone(event.target.value)}
+                                    />
+                                </div>
+                                <div style={{fontSize: "14px", color: "red", margin: "10px 0"}}>
+                                    { errorMessage }
+                                </div>
+                                <div style={{display: "flex", justifyContent: "space-between", widows: "100%"}}>
+
+                                    <button style={{ marginBottom: "20px" }} onClick={registerEmployee}>
+                                        Добавить сотрдуника
+                                    </button>
+                                    <button style={{ marginBottom: "20px" }} onClick={stopAddEmployee}>
+                                        Отменить добавление
+                                    </button>
+                                </div>
+                            </div>
+                            :
+                            <button style={{ marginBottom: "20px" }} onClick={() => addEmployeeFunc(department)}>
+                                Добавить сотрдуника
+                            </button>
+                    }
+
 
                     {/* Список сотрудников */}
                     {/* <ul> */}

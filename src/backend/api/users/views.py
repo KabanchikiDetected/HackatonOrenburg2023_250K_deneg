@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.views import APIView
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q
 
 from .serializers import *
 from .utils import generate_code, send_email, generate_password
@@ -31,6 +33,20 @@ class UserRoleAPIView(APIView):
             {"role": user.role},
             status=status.HTTP_200_OK
         )
+
+
+class RegisterHr(APIView):
+    def post(self, request: Request):
+        serializer = UserDetailSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            user: User = serializer.create(serializer.validated_data)
+            user.set_password(request.data["password"])
+            user.save()
+            
+            return Response({}, status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 class UserResetPasswordAPIView(APIView):
@@ -94,37 +110,45 @@ class EmployeeListAPIView(generics.ListCreateAPIView):
         """
         data = request.data
         password = generate_password()
-        user = User.objects.get_or_create(
+        
+        isExists = User.objects.filter(
+            Q(email=data["email"]) | Q(phone=data["phone"])
+        )
+        
+        if isExists:
+            return Response({
+                "detail": "Такой пользователь уже существует"
+            }, status.HTTP_400_BAD_REQUEST)
+
+        user = User(
             email=data["email"], first_name=data["first_name"],
             last_name=data["last_name"], role="employee",
-            birthday=data["birthday"], password=password,
+            company_id=data["company_id"],
+            birthday=data["birthday"],
             phone=data["phone"]
         )
-        user_detail, created = user
-        if created:
-            department = get_object_or_404(
-                Department, pk=data["department_id"]
-            )
+        user.set_password(password)
+        user.save()
+        user_detail = user
 
-            employee = Employee.objects.get_or_create(
-                user=user_detail, department=department
-            )
-
-            employee_detail, employee_created = employee
-            if employee_created:
-                send_email(
-                    "Регистрация", 
-                    "Ваши данные для входа в личный аккаунт:\n\n"
-                    f"Логин: {data['email']}\nПароль: {password}",
-                    [data["email"]]
-                )
-                serializer = EmployeeSerializer(employee_detail)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-
-        return Response(
-            {"detail": "Такой пользователь уже существует"},
-            status=status.HTTP_400_BAD_REQUEST
+        department = get_object_or_404(
+            Department, pk=data["department_id"]
         )
+
+        employee = Employee.objects.get_or_create(
+            user=user_detail, department=department
+        )
+
+        employee_detail, employee_created = employee
+        if employee_created:
+            send_email(
+                "Регистрация", 
+                "Ваши данные для входа в личный аккаунт:\n\n"
+                f"Логин: {data['email']}\nПароль: {password}",
+                [data["email"]]
+            )
+            serializer = EmployeeSerializer(employee_detail)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class EmployeeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):

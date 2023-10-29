@@ -1,0 +1,15 @@
+.field {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.whiteLine {
+    border-bottom: 3px solid white;
+    margin-bottom: 30px;
+}
+
+.grayLine {
+    border-bottom: 1px solid gray;
+}

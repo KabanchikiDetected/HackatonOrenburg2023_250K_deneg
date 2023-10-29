@@ -14,7 +14,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
 class UserDetailSerializer(serializers.ModelSerializer):
     joined = serializers.DateTimeField(read_only=True)
-    role = serializers.CharField(read_only=True)
+    role = serializers.CharField()
 
     class Meta:
         model = User
@@ -23,6 +23,9 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "last_name", "birthday", "phone",
             "role", "joined", "company"
         )
+        
+    def create(self, validated_data):
+        return User(**validated_data)
 
 
 class UserResetPasswordSerializer(serializers.ModelSerializer):

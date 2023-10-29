@@ -91,3 +91,10 @@
 .col {
     width: 40%;
 }
+
+.field {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
