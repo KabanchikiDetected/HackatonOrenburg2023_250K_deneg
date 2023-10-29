@@ -11,7 +11,7 @@ class BaseReview(BaseModel):
 
     @classmethod
     def table(cls):
-        return database.db[cls._table]
+        return database.db[cls._table.default]
 
     user_id: int
     time: datetime.datetime = Field(default_factory=datetime.datetime.now)

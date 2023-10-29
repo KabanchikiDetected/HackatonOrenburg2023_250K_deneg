@@ -1,18 +1,18 @@
 services:
-  educate:
-    build:
-      context: ./src/services/educate
-    restart: always
-    env_file:
-      - .env.example
-    container_name: educate
-    ports:
-      - 8080:8080
-    links:
-      - "mongo:mongodb"
-      - "django:django"
-    depends_on:
-      - mongo
+  # educate:
+  #   build:
+  #     context: ./src/services/educate
+  #   restart: always
+  #   env_file:
+  #     - .env.example
+  #   container_name: educate
+  #   ports:
+  #     - 8080:8080
+  #   links:
+  #     - "mongo:mongodb"
+  #     - "django:django"
+  #   depends_on:
+  #     - mongo
 
   django:
     build:
@@ -29,15 +29,29 @@ services:
     links:
         - "postgres:postgres"
 
-  review:
+  # review:
+  #   build:
+  #     context: ./src/services/review
+  #   restart: always
+  #   env_file:
+  #     - .env.example
+  #   container_name: review
+  #   ports:
+  #     - 8081:8081
+  #   links:
+  #     - "mongo:mongodb"
+  #   depends_on:
+  #     - mongo
+
+  support:
     build:
-      context: ./src/services/review
+      context: ./src/services/support
     restart: always
     env_file:
       - .env.example
-    container_name: review
+    container_name: support
     ports:
-      - 8081:8081
+      - 8082:8082
     links:
       - "mongo:mongodb"
     depends_on:

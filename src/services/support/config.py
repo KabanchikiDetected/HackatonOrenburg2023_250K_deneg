@@ -7,7 +7,7 @@ class Settings(BaseSettings):
         'extra': 'allow'
     }
     MONGO_URL: str = 'mongodb://mongodb:27017/'
-    MONGO_NAME: str = 'review'
+    MONGO_NAME: str = 'support'
 
 
 settings = Settings()
