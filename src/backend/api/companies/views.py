@@ -24,7 +24,6 @@ class BaseManageView(APIView):
         return Response(status=405)
 
 
-# TODO: add hr's to company
 class CompanyListAPIView(generics.ListAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
