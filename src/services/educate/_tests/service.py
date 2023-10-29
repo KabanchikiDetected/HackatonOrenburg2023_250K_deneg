@@ -25,8 +25,8 @@ async def get_one(id: str):
     return item
 
 
-async def get_all(**filters):
-    return await table.find(filters).to_list(100)
+async def get_all(query):
+    return await table.find(query).to_list(100)
 
 
 async def create(data: dict[str, Any]):

@@ -37,9 +37,9 @@ class TestRead(database.IdMixin, BaseModel):
     model_config = {
         'extra': 'ignore'
     }
-
     title: str
     guide_id: database.PyObjectId | None = None
+    department_id: int
     max_result: int
     total: int  # Кол-во вопросов в тесте.
     questions: list[QuestionrRead]
@@ -56,6 +56,7 @@ class TestReadAdmin(TestRead):
 class TestCreate(BaseModel):
     title: str
     guide_id: database.PyObjectId | None = None
+    department_id: int
     questions: list[QuestionCreate]
     max_result: int
     total: int  # Кол-во вопросов в тесте.
@@ -64,6 +65,7 @@ class TestCreate(BaseModel):
 class TestUpdate(BaseModel):
     title: str
     guide_id: str | None = None
+    department_id: int
     questions: list[QuestionUpdate]
     max_result: int
     total: int  # Кол-во вопросов в тесте.

@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Body, HTTPException, Path, Request, Response, status, Header
+from fastapi import APIRouter, Body, HTTPException, Path, Query, Request, Response, status, Header
 
 from . import schemas, service, dependencies
 
@@ -14,8 +14,10 @@ router = APIRouter(
     response_model=list[schemas.TestReadAdmin])
 async def get_all(
     request: Request,
-    admin: dependencies.GetAdmin):
-    return await service.get_all()
+    admin: dependencies.GetAdmin,
+    depatment_id: Annotated[int, Query()] = None):
+    query = {'department_id': depatment_id} if depatment_id else {}
+    return await service.get_all(query)
 
 
 @router.get(
