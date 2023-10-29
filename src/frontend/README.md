@@ -1,1 +1,0 @@
-![](https://avatars.dzeninfra.ru/get-zen_doc/901899/pub_63a9c966ec3e413b560d15b5_63a9cb05e7cb570eeb857474/orig)

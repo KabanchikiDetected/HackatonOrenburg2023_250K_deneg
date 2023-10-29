@@ -37,7 +37,7 @@ class UserResetPasswordConfirmationSerializer(serializers.ModelSerializer):
         fields = ("email", "recovery_code", "password")
 
 
-class EmployeeSeializer(serializers.ModelSerializer):
+class EmployeeSerializer(serializers.ModelSerializer):
     joined = serializers.DateTimeField(read_only=True)
     email = serializers.CharField(
         source="user.email", read_only=True

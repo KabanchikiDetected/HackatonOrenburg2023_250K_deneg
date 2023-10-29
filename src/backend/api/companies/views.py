@@ -4,8 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import *
+from api.users.serializers import EmployeeSerializer, UserDetailSerializer
 from .permissions import *
-from apps.core.models import Company
+from apps.core.models import Company, Employee, User
 
 FORBIDDEN_DETAIL = {
     "detail": "У вас недостаточно прав для выполнения данного действия."
@@ -26,6 +27,21 @@ class BaseManageView(APIView):
 class CompanyListAPIView(generics.ListAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    
+    def get(self, request, *args, **kwargs):
+        companies = Company.objects.all()
+        serializer = CompanySerializer(companies, many=True)
+        data, new_data = serializer.data, []
+        
+        for el in data:
+            el = dict(el)
+            users = User.objects.filter(company=el["id"], role="hr")
+            user_serializer = UserDetailSerializer(users, many=True)
+            el["hr"] = user_serializer.data
+            new_data.append(el)
+        return Response(
+            new_data, status=status.HTTP_200_OK
+        )
 
 
 class CompanyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -33,13 +49,27 @@ class CompanyDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CompanySerializer
     permission_classes = (IsAuthenticated,)
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request, pk, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:
+            image = request.data["image"]
+            if image != "":
+                company = Company.objects.get(pk=pk)
+                company.image = image
+                company.save()
+                serializer = CompanySerializer(company)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return super().put(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request, pk, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:
+            image = request.data["image"]
+            if image != "":
+                company = Company.objects.get(pk=pk)
+                company.image = image
+                company.save()
+                serializer = CompanySerializer(company)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return super().patch(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
 
@@ -71,21 +101,46 @@ class DepartmentListAPIView(generics.ListCreateAPIView):
         if request.user.role in ["company_admin", "administrator"]:
             return super().post(request, *args, **kwargs)
         return Response(FORBIDDEN_DETAIL, status=status.HTTP_403_FORBIDDEN)
-    
+
+    # Временный вариант (самому стыдно за это... но не хватает времени)
     def get(self, request, *args, **kwargs):
+        departments = Department.objects.all()
+        serializer = DepartmentSerializer(departments, many=True)
+        data = serializer.data
+        new_data = []
+
+        for el in data:
+            el = dict(el)
+            employees = Employee.objects.filter(department=el["id"])
+            employee_serializer = EmployeeSerializer(employees, many=True)
+            el["employees"] = employee_serializer.data
+            new_data.append(el)
+
         company_id: str = request.GET.get("company", default="")
+
         if company_id == "" or not company_id.isdigit():
-            return super().get(request, *args, **kwargs)
+            return Response(new_data, status=status.HTTP_200_OK)
         else:
-            departments = Department.objects.filter(company=company_id)
-            serializer = DepartmentSerializer(departments, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            new_data = [
+                department for department in new_data 
+                if department['company'] == int(company_id)
+            ]
+            return Response(new_data, status=status.HTTP_200_OK)
 
 
 class DepartmentDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk, *args, **kwargs):
+        employees = Employee.objects.filter(department=pk)
+        department = Department.objects.get(pk=pk)
+        serializer = DepartmentSerializer(department)
+        employee_serializer = EmployeeSerializer(employees, many=True)
+        data = serializer.data
+        data["employees"] = employee_serializer.data
+        return Response(data, status=status.HTTP_200_OK)
 
     def put(self, request, *args, **kwargs):
         if request.user.role in ["company_admin", "administrator"]:

@@ -79,7 +79,7 @@ class UserResetPasswordAPIView(APIView):
 
 class EmployeeListAPIView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSeializer
+    serializer_class = EmployeeSerializer
 
     def post(self, request):
         """
@@ -118,7 +118,7 @@ class EmployeeListAPIView(generics.ListCreateAPIView):
                     f"Логин: {data['email']}\nПароль: {password}",
                     [data["email"]]
                 )
-                serializer = EmployeeSeializer(employee_detail)
+                serializer = EmployeeSerializer(employee_detail)
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(
@@ -129,12 +129,12 @@ class EmployeeListAPIView(generics.ListCreateAPIView):
 
 class EmployeeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Employee.objects.all()
-    serializer_class = EmployeeSeializer
+    serializer_class = EmployeeSerializer
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk, *args, **kwargs):
         employee = get_object_or_404(Employee, user__pk=pk)
-        serializer = EmployeeSeializer(employee)
+        serializer = EmployeeSerializer(employee)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def destroy(self, request, pk: int):
