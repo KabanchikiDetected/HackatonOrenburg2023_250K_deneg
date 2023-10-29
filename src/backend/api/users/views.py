@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 from .serializers import *
-from .utils import generate_code, send_email
+from .utils import generate_code, send_email, generate_password
 from apps.core.models import User, Employee, Department
 
 from drf_yasg.utils import swagger_auto_schema
@@ -88,16 +88,16 @@ class EmployeeListAPIView(generics.ListCreateAPIView):
             "first_name": "",
             "last_name": "",
             "birthday": "",
-            "password": "",
             "phone": "",
             "department_id": int
         }
         """
         data = request.data
+        password = generate_password()
         user = User.objects.get_or_create(
             email=data["email"], first_name=data["first_name"],
             last_name=data["last_name"], role="employee",
-            birthday=data["birthday"], password=["password"],
+            birthday=data["birthday"], password=password,
             phone=data["phone"]
         )
         user_detail, created = user
@@ -105,16 +105,22 @@ class EmployeeListAPIView(generics.ListCreateAPIView):
             department = get_object_or_404(
                 Department, pk=data["department_id"]
             )
-            
+
             employee = Employee.objects.get_or_create(
                 user=user_detail, department=department
             )
-            
+
             employee_detail, employee_created = employee
             if employee_created:
+                send_email(
+                    "Регистрация", 
+                    "Ваши данные для входа в личный аккаунт:\n\n"
+                    f"Логин: {data['email']}\nПароль: {password}",
+                    [data["email"]]
+                )
                 serializer = EmployeeSeializer(employee_detail)
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
         return Response(
             {"detail": "Такой пользователь уже существует"},
             status=status.HTTP_400_BAD_REQUEST
