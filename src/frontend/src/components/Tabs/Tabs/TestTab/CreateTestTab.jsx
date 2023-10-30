@@ -64,7 +64,8 @@ const CreateTestTab = (company) => {
                 }
             }),
             max_result: questions.length,
-            total: questions.length
+            total: questions.length,
+            department_id: 1
         }
 
         console.log(data)
